@@ -2822,7 +2822,11 @@ def setup(params):
           params.per_gpu_thread_count)
     # Default to two threads. One for the device compute and the other for
     # memory copies.
-    per_gpu_thread_count = params.per_gpu_thread_count or 2
+    if params.hierarchical_copy:
+      per_gpu_thread_count = params.per_gpu_thread_count or 2
+    else:
+      per_gpu_thread_count = params.per_gpu_thread_count or 1
+
     total_gpu_thread_count = per_gpu_thread_count * params.num_gpus
 
     if params.gpu_thread_mode == 'gpu_private':
