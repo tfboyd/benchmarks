@@ -30,6 +30,7 @@ References:
   Atrous Convolution, and Fully Connected CRFs
   arXiv:1606.00915 (2016)
 """
+from __future__ import print_function
 
 import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
@@ -250,8 +251,8 @@ class ResnetModel(model_lib.CNNModel):
         'resnet101_v2': 32,
         'resnet152_v2': 32,
     }
-    batch_size = default_batch_sizes.get(model, 32)
-    super(ResnetModel, self).__init__(model, 224, batch_size, 0.004,
+    batch_size = default_batch_sizes.get(model, 64)
+    super(ResnetModel, self).__init__(model, 224, batch_size, 0.128,
                                       layer_counts)
     if 'v2' in model:
       self.version = 'v2'
@@ -287,7 +288,8 @@ class ResnetModel(model_lib.CNNModel):
     num_batches_per_epoch = (
         float(datasets.IMAGENET_NUM_TRAIN_IMAGES) / batch_size)
     boundaries = [int(num_batches_per_epoch * x) for x in [30, 60, 80, 90]]
-    rescaled_lr = self.learning_rate / self.default_batch_size * batch_size
+    rescaled_lr = self.learning_rate * (batch_size / 256)
+    print('Staring lr:{}'.format(rescaled_lr))
     values = [1, 0.1, 0.01, 0.001, 0.0001]
     values = [rescaled_lr * v for v in values]
     lr = tf.train.piecewise_constant(global_step, boundaries, values)
