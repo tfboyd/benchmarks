@@ -34,6 +34,7 @@ from models.experimental import deepspeech
 from models.experimental import official_ncf_model
 
 
+
 _model_name_to_imagenet_model = {
     'vgg11': vgg_model.Vgg11Model,
     'vgg16': vgg_model.Vgg16Model,

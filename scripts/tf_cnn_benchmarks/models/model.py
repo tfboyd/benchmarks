@@ -31,13 +31,17 @@ BuildNetworkResult = namedtuple(
 
 
 class Model(object):
-  """Base model config for DNN benchmarks."""
+  """Base model config for DNN benchmarks.
 
-  def __init__(self,
-               model_name,
-               batch_size,
-               learning_rate,
-               fp16_loss_scale,
+  Args:
+    model_name: Name of the model.
+    batch_size: Default batch-size per gpu to use.
+    learning_rate: Base default initial learning rate.
+    fp16_loss_scale: Scale value for loss when using fp16 mixed-precision
+    params: dict of parameters, most likely flags from parent.
+  """
+
+  def __init__(self, model_name, batch_size, learning_rate, fp16_loss_scale,
                params=None):
     self.model_name = model_name
     self.batch_size = batch_size
@@ -46,9 +50,8 @@ class Model(object):
     # TODO(reedwm) Set custom loss scales for each model instead of using the
     # default of 128.
     self.fp16_loss_scale = fp16_loss_scale
+    self.params = params
 
-    # use_tf_layers specifies whether to build the model using tf.layers.
-    # fp16_vars specifies whether to create the variables in float16.
     if params:
       self.use_tf_layers = params.use_tf_layers
       self.fp16_vars = params.fp16_vars
@@ -249,3 +252,4 @@ class CNNModel(Model):
     top_5_op = tf.reduce_sum(
         tf.cast(tf.nn.in_top_k(logits, labels, 5), data_type))
     return {'top_1_accuracy': top_1_op, 'top_5_accuracy': top_5_op}
+

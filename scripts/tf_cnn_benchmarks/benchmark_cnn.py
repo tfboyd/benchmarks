@@ -2876,3 +2876,4 @@ def setup(params):
   platforms_util.initialize(params, create_config_proto(params))
 
   return params
+
