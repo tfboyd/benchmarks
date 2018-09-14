@@ -317,7 +317,8 @@ class ResnetModel(model_lib.CNNModel):
       Base learning rate to use to create lr schedule.
     """
     base_lr = self.learning_rate
-    if self.params.variable_update == 'replicated':
+    if (self.params.variable_update == 'replicated' and
+        self.params.optimizer in ('sgd', 'momentum')):
       base_lr = self.learning_rate / self.params.num_gpus
     scaled_lr = base_lr * (batch_size / self.base_lr_batch_size)
     return scaled_lr

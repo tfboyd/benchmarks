@@ -33,6 +33,11 @@ class ResNetModelTest(tf.test.TestCase):
     lr = self._test_scaled_base_learning_rate(8, 'replicated', 256 * 8)
     self.assertEquals(lr, .128)
 
+  def testGetScaledBaseLearningRateEightGpuRmsProp(self):
+    lr = self._test_scaled_base_learning_rate(8, 'replicated', 256 * 8,
+                                              optimizer='rmsprop')
+    self.assertEquals(lr, 1.024)
+
   def testGetScaledBaseLearningRateTwoGpuParameter(self):
     lr = self._test_scaled_base_learning_rate(2, 'parameter_server', 256 * 2)
     self.assertEquals(lr, .256)
