@@ -42,10 +42,13 @@ class SystemStatsMonitor(object):
     disks_read_per_sec = after.read_bytes - before.read_bytes
     return time.time(), disks_read_per_sec
 
-  def get_process_memory(self):
-    # return the memory usage in percentage like top
+  def get_process_memory(self, pid=None):
+    # return the memory usage in percentage like top.
+    if pid:
+      process = psutil.Process(pid)
+    else:
+      process = psutil.Process(os.getpid())
 
-    process = psutil.Process(os.getpid())
     mem = process.memory_percent()
     return time.time(), mem
 
@@ -75,7 +78,7 @@ if __name__ == '__main__':
   logging.basicConfig(filename=FLAGS.log_file, level=logging.DEBUG)
   monitor = SystemStatsMonitor()
   while 2 > 1:
-    _timestamp, _mem = monitor.get_process_memory()
+    _timestamp, _mem = monitor.get_process_memory(pid=FLAGS.process_id)
     logging.info('Process Memory:%s,%s', _timestamp, _mem)
     time.sleep(FLAGS.log_interval)
 
