@@ -137,6 +137,10 @@ def _run_internal(benchmark_method, harness_info, site_package_info,
       execution_summary)
   logging.info('Benchmark execution for %s completed with summary:\n %s',
                benchmark_method, json.dumps(execution_summary, indent=2))
+  # Writes result to log folder.
+  result_summary_file = os.path.join(output_dir, 'result.json')
+  with open(result_summary_file, 'w', encoding='utf-8') as f:
+    json.dump(execution_summary, f, ensure_ascii=False, indent=2)
   utils.maybe_upload_to_gcs(output_dir, config.output_gcs_url)
   logging.getLogger().removeHandler(filehandler)
   method_execution_time = {
